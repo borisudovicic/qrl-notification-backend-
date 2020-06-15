@@ -1,0 +1,102 @@
+swagger: "2.0"
+info:
+  version: 1.0.1
+  title: notification-backend
+  description: Handles sending notifications to SMS, email, phone
+basePath: /api/v1
+tags:
+  - name: Notification
+    description: All notification handling
+  - name: Specification
+    description: The swagger API specification
+
+definitions:
+  NotificationBody:
+    type: object
+    title: notification
+    required:
+      - usernames
+      - data
+    properties:
+      usernames:
+        type: array
+        items:
+          type: string
+        example: ["agates10@kent.edu", "dbarker8@kent.edu", "phend9@kent.edu"]
+      data:
+        type: object
+        properties:
+          badge:
+            type: string
+            example: "1"
+          title:
+            type: string
+            example: Test Notification
+          body:
+            type: string
+            example: Testing out notifications here!
+          sound:
+            type: string
+            example: default
+          topic:
+            type: string
+            example: chat.sqrl.app
+            default: chat.sqrl.app
+        
+  DeviceTokenBody:
+    type: object
+    title: deviceToken
+    required:
+      - deviceToken
+      - _id
+    properties:
+      deviceToken:
+        type: string
+        example: "123"
+      _id:
+        type: string
+        example: agates10@kent.edu
+
+consumes:
+  - application/json
+produces:
+  - application/json
+
+paths:
+  /spec:
+    get:
+      tags:
+        - Specification
+      responses:
+        200:
+          description: Return the API specification
+
+  /notification/push:
+    post:
+      tags:
+        - Notification
+      description: Send a push notification to device tokens
+      parameters:
+        - name: notification
+          description: Notification body to post
+          in: body
+          schema:
+            $ref: '#/definitions/NotificationBody'
+      responses:
+        200:
+          description: Returns send response success
+
+  /notification/add/devicetoken:
+    post:
+      tags:
+        - Notification
+      description: Add a device token to a user ID
+      parameters:
+        - name: deviceToken
+          description: Device token body to post
+          in: body
+          schema:
+            $ref: '#/definitions/DeviceTokenBody'
+      responses:
+        200:
+          description: Returns send response success
